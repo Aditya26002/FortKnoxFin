@@ -2,6 +2,7 @@
 import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
+import { date, z } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -193,3 +194,56 @@ export const getTransactionStatus = (date: Date) => {
 
   return date > twoDaysAgo ? "Processing" : "Success";
 };
+
+export const authFormSchema = (type: string) =>
+  z.object({
+    email: z.string().email(),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    // SignUp Props
+    firstName:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string()
+            .min(3, { message: "First name must be at least 3 characters" }),
+    lastName:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string()
+            .min(3, { message: "Last name must be at least 3 characters" }),
+    address1:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string()
+            .min(3, { message: "Address must be at least 3 characters" })
+            .max(100),
+    city:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().min(3, { message: "City must be at least 3 characters" }),
+    state:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string()
+            .min(2, { message: "State must be at least 2 characters" })
+            .max(2),
+    postalCode:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string()
+            .min(3, { message: "Postal code must be at least 3 characters" })
+            .max(6),
+    dateOfBirth: z
+      .string()
+      .min(3, { message: "Date of birth must be at least 3 characters" }),
+    ssn:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().min(3, { message: "SSN must be at least 3 characters" }),
+  });
